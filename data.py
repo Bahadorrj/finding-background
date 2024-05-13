@@ -17,9 +17,9 @@ class Data:
         )
         self._peaks_attributes = {
             "height": None,
-            "width": None,
             "threshold": None,
             "distance": None,
+            "width": None
         }
         self._peaks, _ = find_peaks(-self._intensities_s, **self._peaks_attributes)
         self._regression_curve = regression_curve(self._peaks, self._intensities_s)
@@ -73,8 +73,8 @@ class Data:
     def curves(self) -> tuple:
         curves = (
             (self._pixels, self._intensities, "Intensities"),
-            (self._pixels_s, self._intensities_s, "Smoothed Intensities"),
-            (self._pixels_s[self._peaks], self._intensities_s[self._peaks], "Maxima"),
+            (self._pixels_s, self._intensities_s, f"Smoothed Intensities: level {self._smoothness}"),
+            (self._pixels_s[self._peaks], self._intensities_s[self._peaks], f"Maxima: {self._peaks_attributes}"),
             (self._pixels_s, self._regression_curve, "Regression Curve"),
             (self._pixels_s, self._optimal_curve, "Optimal Intensities"),
             (self._pixels_curve_s, self._optimal_curve_s, "Smoothed Optimal"),

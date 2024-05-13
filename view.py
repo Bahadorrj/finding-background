@@ -1,9 +1,8 @@
-import re
 import sys
 
 import matplotlib
 import numpy as np
-from PyQt6 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from functools import partial
@@ -188,6 +187,7 @@ class Window(QtWidgets.QMainWindow):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    app.setWindowIcon(QtGui.QIcon("icon.png"))
     ui = Window()
     ui.show()
     sys.exit(app.exec())
