@@ -29,6 +29,7 @@ class Window(QtWidgets.QMainWindow):
         super().__init__(parent)
 
         self.resize(1200, 800)
+        self.setWindowTitle('Remove Background')
 
         mainLayout = QtWidgets.QVBoxLayout()
         self._gridLayout = QtWidgets.QGridLayout()
@@ -138,7 +139,7 @@ class Window(QtWidgets.QMainWindow):
         doubleSpinBox.setMinimum(1.0)
         doubleSpinBox.setMaximum(20.0)
         doubleSpinBox.setSingleStep(0.01)
-        doubleSpinBox.setValue(4.0)
+        doubleSpinBox.setValue(1.0)
         doubleSpinBox.valueChanged.connect(self._updateSmoothness)
         horizontalLayout.addWidget(doubleSpinBox)
         return horizontalLayout
@@ -155,8 +156,7 @@ class Window(QtWidgets.QMainWindow):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(lineEdit.sizePolicy().hasHeightForWidth())
         lineEdit.setSizePolicy(sizePolicy)
-        lineEdit.editingFinished.connect(
-            partial(self._updatePeaksAttribute, label.lower(), lineEdit))
+        lineEdit.editingFinished.connect(partial(self._updateData, label.lower(), lineEdit))
         horizontalLayout.addWidget(lineEdit)
         return horizontalLayout
 
@@ -167,26 +167,19 @@ class Window(QtWidgets.QMainWindow):
         self._plotData()
 
     def _updateSmoothness(self, level: float):
-        self._data.smoothness_changed(level)
-        self._plotData()
+        success = self._data.update('smoothness', level)
+        if success:
+            self._plotData()
 
     def _smoothOptimalCurve(self, checked: bool) -> None:
         self._plotState[-1] = checked
         self._plotState[-2] = not checked
         self._plotData()
 
-    def _updatePeaksAttribute(self, label: str, lineEdit: QtWidgets.QLineEdit):
-        text = lineEdit.text()
-        pattern = r'^$|^\d*\.?\d+$'
-        if re.match(pattern, text) is not None:
-            try:
-                value = float(text)
-                if label == 'height':
-                    value = -value
-            except ValueError:
-                value = None
-            self._data.peaks_attributes[label] = value
-            self._data.peaks_attributes_changed()
+    def _updateData(self, propertyName: str, lineEdit: QtWidgets.QLineEdit):
+        propertyValue = lineEdit.text()
+        success = self._data.update(propertyName, propertyValue)
+        if success:
             self._plotData()
         else:
             lineEdit.setText("Not a valid")
