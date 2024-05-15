@@ -1,5 +1,6 @@
-from scipy.interpolate import CubicSpline
 import numpy as np
+from scipy.interpolate import CubicSpline
+
 
 def polynomial(x: np.ndarray, y: np.ndarray, degree: int) -> np.ndarray:
     coefficients = np.polyfit(x, y, degree)
@@ -27,10 +28,10 @@ def smoothen(x: np.ndarray, y: np.ndarray, size: int, level: float) -> tuple[np.
     return X, Y
 
 
-def regression_curve(peaks: np.ndarray, y: np.ndarray) -> np.ndarray:
+def create_curve(peaks: np.ndarray, y: np.ndarray) -> np.ndarray:
     lspace = np.zeros(y.size, dtype=np.float64)
     for i in range(peaks.size - 1):
-        start, stop = peaks[i], peaks[i + 1]
+        start, stop = int(peaks[i]), int(peaks[i + 1])
         Y = np.linspace(y[start], y[stop], stop - start)
         pointer = 0
         for px in range(start, stop):
