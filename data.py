@@ -83,6 +83,24 @@ class Data:
         return X, Y
 
     @staticmethod
+    def create_curve(peaks: np.ndarray, y: np.ndarray) -> np.ndarray:
+        lspace = np.zeros(y.size, dtype=np.float64)
+        for i in range(peaks.size - 1):
+            start, stop = int(peaks[i]), int(peaks[i + 1])
+            Y = np.linspace(y[start], y[stop], stop - start)
+            pointer = 0
+            for px in range(start, stop):
+                lspace[px] = Y[pointer]
+                pointer += 1
+        return lspace
+
+    @staticmethod
+    def polynomial(x: np.ndarray, y: np.ndarray, degree: int) -> np.ndarray:
+        coefficients = np.polyfit(x, y, degree)
+        y_curve = np.polyval(coefficients, x)
+        return y_curve
+
+    @staticmethod
     def _interpret_string(string: str) -> int:
         if string == "":
             return 0
